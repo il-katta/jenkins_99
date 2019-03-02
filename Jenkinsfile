@@ -43,7 +43,7 @@ pipeline {
                     // incremento della versione del file dell'assembly generato
                     env.NEW_VERSION = projedit.projedit("csframework", "AssemblyInfo.cs")
                     // aggiunge la versione alla descrizione della compilazione
-                    currentBuild.description = currentBuild.description + "version ${env.NEW_VERSION}"
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
                     archiveArtifacts artifacts: "AssemblyInfo.cs", fingerprint: true, onlyIfSuccessful: true
                 }
@@ -58,7 +58,7 @@ pipeline {
                     // incremento della versione del file dell'assembly generato
                     env.NEW_VERSION = projedit.projedit("csframework", "AssemblyInfo.cs")
                     // aggiunge la versione alla descrizione della compilazione
-                    currentBuild.description = currentBuild.description + "version ${env.NEW_VERSION}"
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
                     archiveArtifacts artifacts: "AssemblyInfo.cs", fingerprint: true, onlyIfSuccessful: true
                 }
@@ -73,7 +73,7 @@ pipeline {
                     // incremento della versione del file dell'assembly generato
                     env.NEW_VERSION = projedit.projedit("vbframework", "AssemblyInfo.vb")
                     // aggiunge la versione alla descrizione della compilazione
-                    currentBuild.description = currentBuild.description + "version ${env.NEW_VERSION}"
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
                     archiveArtifacts artifacts: "AssemblyInfo.vb", fingerprint: true, onlyIfSuccessful: true
                 }
@@ -88,7 +88,7 @@ pipeline {
                     // incremento della versione del file dell'assembly generato
                     env.NEW_VERSION = projedit.projedit("vbframework", "AssemblyInfo.vb")
                     // aggiunge la versione alla descrizione della compilazione
-                    currentBuild.description = currentBuild.description + "version ${env.NEW_VERSION}"
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
                     archiveArtifacts artifacts: "AssemblyInfo.cs", fingerprint: true, onlyIfSuccessful: true
                 }
