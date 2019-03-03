@@ -18,8 +18,8 @@ pipeline {
         githubPush()
     }
     stages {
-        stage ('Clean') { steps { deleteDir() } }
         stage ('Checkout') { steps { checkout scm  } }
+
         stage('short circuit') {
             // questo stage viene eseguito solo se l'ultimo commit pushato è stato effetuato da jenkins
             when { expression { test_committer('jenkins')  } }
@@ -166,6 +166,11 @@ pipeline {
                     git_push_ssh commitMsg: "Jenkins build #${env.BUILD_NUMBER}", tagName: "${env.NEW_VERSION}", files: "."
                 }
             }
+        }
+    }
+    post { 
+        always { 
+            cleanWs()
         }
     }
 }
