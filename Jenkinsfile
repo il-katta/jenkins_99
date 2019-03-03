@@ -33,6 +33,33 @@ pipeline {
             }
         }
 
+        stage('nuget_download windows') {
+            agent { node { label 'windows' } }
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    // download dell'eseguibile nuget.exe
+                    nuget_download
+
+                    archiveArtifacts artifacts: "nuget.exe", fingerprint: true, onlyIfSuccessful: true
+                }
+            }
+        }
+
+        stage('nuget_download linux') {
+            agent { node { label 'linux' } }
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    // download dell'eseguibile nuget.exe
+                    nuget_download
+
+                    archiveArtifacts artifacts: "nuget.exe", fingerprint: true, onlyIfSuccessful: true
+                }
+            }
+        }
+
+
         // tutti gli altri stage non vengono eseguiti se l'ultimo commit è di jenkins
 
         stage('increase build version C# windows') {
@@ -121,32 +148,7 @@ pipeline {
             }
         }
 
-        stage('nuget_download windows') {
-            agent { node { label 'windows' } }
-            when { expression { !test_committer('jenkins')  } }
-            steps {
-                script {
-                    // download dell'eseguibile nuget.exe
-                    nuget_download
-
-                    archiveArtifacts artifacts: "nuget.exe", fingerprint: true, onlyIfSuccessful: true
-                }
-            }
-        }
-
-        stage('nuget_download linux') {
-            agent { node { label 'linux' } }
-            when { expression { !test_committer('jenkins')  } }
-            steps {
-                script {
-                    // download dell'eseguibile nuget.exe
-                    nuget_download
-
-                    archiveArtifacts artifacts: "nuget.exe", fingerprint: true, onlyIfSuccessful: true
-                }
-            }
-        }
-
+        
         stage('push changes') {
             when { expression { !test_committer('jenkins')  } }
             steps {
