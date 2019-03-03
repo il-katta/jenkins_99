@@ -36,22 +36,6 @@ pipeline {
             }
         }
 
-
-        stage('write_build_info windows') {
-            agent { node { label 'windows' } }
-            when { expression { !test_committer('jenkins')  } }
-            steps {
-                script {
-                    write_build_info.to_json_file("write_build_info_w.json")
-                    write_build_info.to_yaml_file("write_build_info_w.yaml")
-
-                    archiveArtifacts artifacts: "write_build_info_w.*", fingerprint: true, onlyIfSuccessful: true
-
-                    stash includes: 'write_build_info_w.*', name: 'write_build_info_w'
-                }
-            }
-        }
-
         stage('write_build_info linux') {
             agent { node { label 'linux' } }
             when { expression { !test_committer('jenkins')  } }
@@ -67,6 +51,20 @@ pipeline {
             }
         }
 
+        stage('write_build_info windows') {
+            agent { node { label 'windows' } }
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    write_build_info.to_json_file("write_build_info_w.json")
+                    write_build_info.to_yaml_file("write_build_info_w.yaml")
+
+                    archiveArtifacts artifacts: "write_build_info_w.*", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'write_build_info_w.*', name: 'write_build_info_w'
+                }
+            }
+        }
 
         stage('nuget download windows') {
             agent { node { label 'windows' } }
