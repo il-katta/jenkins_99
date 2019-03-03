@@ -1,3 +1,4 @@
+@Library('jenkins-libs') _
 import it.loopback.jenkins.Projedit
 def projedit = new it.loopback.jenkins.Projedit(this)
 
@@ -14,7 +15,7 @@ pipeline {
     // esegue il controllo dei commit
     triggers { 
         pollSCM('H/2 * * * *') 
-        //githubPush()
+        githubPush()
     }
     stages {
         stage('short circuit') {
