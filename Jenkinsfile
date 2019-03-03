@@ -14,7 +14,7 @@ pipeline {
     }
     // esegue il controllo dei commit
     triggers { 
-        pollSCM(scmpoll_spec: 'H/2 * * * *', ignorePostCommitHooks: true)
+        //pollSCM(scmpoll_spec: 'H/2 * * * *', ignorePostCommitHooks: true)
         githubPush()
     }
     stages {
