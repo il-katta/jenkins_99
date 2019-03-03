@@ -76,6 +76,8 @@ pipeline {
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
                     archiveArtifacts artifacts: "AssemblyInfo.cs", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'AssemblyInfo.cs', name: 'AssemblyInfo.cs'
                 }
             }
         }
@@ -91,6 +93,8 @@ pipeline {
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
                     archiveArtifacts artifacts: "AssemblyInfo.cs", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'AssemblyInfo.cs', name: 'AssemblyInfo.cs'
                 }
             }
         }
@@ -106,6 +110,8 @@ pipeline {
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
                     archiveArtifacts artifacts: "AssemblyInfo.vb", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'AssemblyInfo.vb', name: 'AssemblyInfo.vb'
                 }
             }
         }
@@ -120,7 +126,9 @@ pipeline {
                     // aggiunge la versione alla descrizione della compilazione
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
-                    archiveArtifacts artifacts: "AssemblyInfo.cs", fingerprint: true, onlyIfSuccessful: true
+                    archiveArtifacts artifacts: "AssemblyInfo.vb", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'AssemblyInfo.vb', name: 'AssemblyInfo.vb'
                 }
             }
         }
@@ -134,6 +142,8 @@ pipeline {
                     write_build_info.to_yaml_file("write_build_info_w.yaml")
 
                     archiveArtifacts artifacts: "write_build_info_w.*", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'write_build_info_w.*', name: 'write_build_info_w'
                 }
             }
         }
@@ -147,6 +157,8 @@ pipeline {
                     write_build_info.to_yaml_file("write_build_info_l.yaml")
                     
                     archiveArtifacts artifacts: "write_build_info_l.*", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'write_build_info_l.*', name: 'write_build_info_l'
                 }
             }
         }
@@ -156,6 +168,11 @@ pipeline {
             when { expression { !test_committer('jenkins')  } }
             steps {
                 script {
+                    unstash 'AssemblyInfo.vb'
+                    unstash 'AssemblyInfo.cs'
+                    unstash 'write_build_info_l'
+                    unstash 'write_build_info_w'
+
                     // commit e push delle modifiche ( salvataggio della versione incrementata )
                     env.J_CREDS_IDS = '	repo-git' // credenziali che hanno accesso al repositori
                     env.J_GIT_CONFIG = 'false'
