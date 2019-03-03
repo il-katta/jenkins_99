@@ -13,7 +13,7 @@ pipeline {
     }
     // esegue il controllo dei commit
     triggers { 
-        pollSCM('H * * * *') 
+        pollSCM('H/2 * * * *') 
         //githubPush()
     }
     stages {
