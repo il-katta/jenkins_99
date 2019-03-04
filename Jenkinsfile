@@ -101,7 +101,7 @@ pipeline {
             steps {
                 script {
                     // incremento della versione del file dell'assembly generato
-                    env.NEW_VERSION = projedit.projedit("csframework", "AssemblyInfo.cs")
+                    env.NEW_VERSION = projedit.increase_version("csframework", "AssemblyInfo.cs")
                     // aggiunge la versione alla descrizione della compilazione
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
@@ -118,7 +118,7 @@ pipeline {
             steps {
                 script {
                     // incremento della versione del file dell'assembly generato
-                    env.NEW_VERSION = projedit.projedit("csframework", "AssemblyInfo.cs")
+                    env.NEW_VERSION = projedit.increase_version("csframework", "AssemblyInfo.cs")
                     // aggiunge la versione alla descrizione della compilazione
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
@@ -135,7 +135,7 @@ pipeline {
             steps {
                 script {
                     // incremento della versione del file dell'assembly generato
-                    env.NEW_VERSION = projedit.projedit("vbframework", "AssemblyInfo.vb")
+                    env.NEW_VERSION = projedit.increase_version("vbframework", "AssemblyInfo.vb")
                     // aggiunge la versione alla descrizione della compilazione
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
@@ -152,7 +152,7 @@ pipeline {
             steps {
                 script {
                     // incremento della versione del file dell'assembly generato
-                    env.NEW_VERSION = projedit.projedit("vbframework", "AssemblyInfo.vb")
+                    env.NEW_VERSION = projedit.increase_version("vbframework", "AssemblyInfo.vb")
                     // aggiunge la versione alla descrizione della compilazione
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
@@ -185,6 +185,84 @@ pipeline {
                 }
             }
         }
+        stage('generate version number') {
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    env.NEW_VERSION = date_format.format_now("yy.MM.dd.${env.BUILD_ID}")
+                    currentBuild.description = env.NEW_VERSION
+                }
+            }
+        }
+
+        stage('set build version C# windows') {
+            agent { node { label 'windows' } }
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    // incremento della versione del file dell'assembly generato
+                    env.NEW_VERSION = projedit.set_version("csframework", "AssemblyInfo.cs", env.NEW_VERSION)
+                    // aggiunge la versione alla descrizione della compilazione
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
+
+                    archiveArtifacts artifacts: "AssemblyInfo.cs", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'AssemblyInfo.cs', name: 'AssemblyInfo.cs'
+                }
+            }
+        }
+
+        stage('set build version C# linux') {
+            agent { node { label 'linux' } }
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    // incremento della versione del file dell'assembly generato
+                    env.NEW_VERSION = projedit.set_version("csframework", "AssemblyInfo.cs", env.NEW_VERSION)
+                    // aggiunge la versione alla descrizione della compilazione
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
+
+                    archiveArtifacts artifacts: "AssemblyInfo.cs", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'AssemblyInfo.cs', name: 'AssemblyInfo.cs'
+                }
+            }
+        }
+
+        stage('set build version VB.NET windows') {
+            agent { node { label 'windows' } }
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    // incremento della versione del file dell'assembly generato
+                    env.NEW_VERSION = projedit.set_version("vbframework", "AssemblyInfo.vb", env.NEW_VERSION)
+                    // aggiunge la versione alla descrizione della compilazione
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
+
+                    archiveArtifacts artifacts: "AssemblyInfo.vb", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'AssemblyInfo.vb', name: 'AssemblyInfo.vb'
+                }
+            }
+        }
+
+        stage('set build version VB.NET linux') {
+            agent { node { label 'linux' } }
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    // incremento della versione del file dell'assembly generato
+                    env.NEW_VERSION = projedit.set_version("vbframework", "AssemblyInfo.vb")
+                    // aggiunge la versione alla descrizione della compilazione
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
+
+                    archiveArtifacts artifacts: "AssemblyInfo.vb", fingerprint: true, onlyIfSuccessful: true
+
+                    stash includes: 'AssemblyInfo.vb', name: 'AssemblyInfo.vb'
+                }
+            }
+        }
+
     }
     post { 
         always { 
