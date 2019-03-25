@@ -187,7 +187,7 @@ pipeline {
             steps {
                 script {
                     env.NEW_VERSION = (new Date()).format("yy.MM.dd.${env.BUILD_ID}")
-                    currentBuild.description = env.NEW_VERSION
+                    currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
                 }
             }
         }
