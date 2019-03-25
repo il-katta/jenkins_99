@@ -161,26 +161,7 @@ pipeline {
             }
         }
         
-        stage('push changes') {
-            when { expression { !test_committer('jenkins')  } }
-            steps {
-                script {
-                    unstash 'AssemblyInfo.vb'
-                    unstash 'AssemblyInfo.cs'
-                    unstash 'write_build_info_l'
-                    unstash 'write_build_info_w'
-
-                    // commit e push delle modifiche ( salvataggio della versione incrementata )
-                    env.J_CREDS_IDS = '	repo-git' // credenziali che hanno accesso al repositori
-                    env.J_GIT_CONFIG = 'false'
-                    env.J_USERNAME = 'jenkins'
-                    env.J_EMAIL = 'jenkins@loopback.it'
-                    env.J_GIT_CONFIG = "true"
-                    env.BRANCH_NAME = "master" // branch remoto sul quale pushare le modifiche
-                    git_push_ssh commitMsg: "Jenkins build #${env.BUILD_NUMBER}", tagName: "${env.NEW_VERSION}", files: "."
-                }
-            }
-        }
+        
 
         stage('generate version number') {
             when { expression { !test_committer('jenkins')  } }
@@ -256,6 +237,27 @@ pipeline {
                     archiveArtifacts artifacts: "AssemblyInfo.vb", fingerprint: true, onlyIfSuccessful: true
 
                     stash includes: 'AssemblyInfo.vb', name: 'AssemblyInfo.vb'
+                }
+            }
+        }
+
+        stage('push changes') {
+            when { expression { !test_committer('jenkins')  } }
+            steps {
+                script {
+                    unstash 'AssemblyInfo.vb'
+                    unstash 'AssemblyInfo.cs'
+                    unstash 'write_build_info_l'
+                    unstash 'write_build_info_w'
+
+                    // commit e push delle modifiche ( salvataggio della versione incrementata )
+                    env.J_CREDS_IDS = '	repo-git' // credenziali che hanno accesso al repositori
+                    env.J_GIT_CONFIG = 'false'
+                    env.J_USERNAME = 'jenkins'
+                    env.J_EMAIL = 'jenkins@loopback.it'
+                    env.J_GIT_CONFIG = "true"
+                    env.BRANCH_NAME = "master" // branch remoto sul quale pushare le modifiche
+                    git_push_ssh commitMsg: "Jenkins build #${env.BUILD_NUMBER}", tagName: "${env.NEW_VERSION}", files: "."
                 }
             }
         }
