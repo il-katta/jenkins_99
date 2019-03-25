@@ -161,8 +161,6 @@ pipeline {
             }
         }
         
-        
-
         stage('generate version number') {
             when { expression { !test_committer('jenkins')  } }
             steps {
@@ -230,7 +228,7 @@ pipeline {
             steps {
                 script {
                     // incremento della versione del file dell'assembly generato
-                    env.NEW_VERSION = projedit.set_version("vbframework", "AssemblyInfo.vb")
+                    env.NEW_VERSION = projedit.increase_version("vbframework", "AssemblyInfo.vb")
                     // aggiunge la versione alla descrizione della compilazione
                     currentBuild.description = currentBuild.description + " version ${env.NEW_VERSION}"
 
