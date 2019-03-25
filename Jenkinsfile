@@ -35,6 +35,7 @@ pipeline {
                 }
             }
         }
+        // tutti gli altri stage non vengono eseguiti se l'ultimo commit è di jenkins
 
         stage('write_build_info linux') {
             agent { node { label 'linux' } }
@@ -73,7 +74,7 @@ pipeline {
                 script {
                     // download dell'eseguibile nuget.exe
                     nuget_download.download_windows()
-
+                    powershell 'nuget help'
                     archiveArtifacts artifacts: "nuget.exe", fingerprint: true, onlyIfSuccessful: true
                 }
             }
@@ -86,14 +87,11 @@ pipeline {
                 script {
                     // download dell'eseguibile nuget.exe
                     nuget_download()
-
+                    sh 'mono nuget.exe help'
                     archiveArtifacts artifacts: "nuget.exe", fingerprint: true, onlyIfSuccessful: true
                 }
             }
         }
-
-
-        // tutti gli altri stage non vengono eseguiti se l'ultimo commit è di jenkins
 
         stage('increase build version C# windows') {
             agent { node { label 'windows' } }
@@ -163,8 +161,6 @@ pipeline {
             }
         }
         
-        
-        
         stage('push changes') {
             when { expression { !test_committer('jenkins')  } }
             steps {
@@ -185,11 +181,12 @@ pipeline {
                 }
             }
         }
+
         stage('generate version number') {
             when { expression { !test_committer('jenkins')  } }
             steps {
                 script {
-                    env.NEW_VERSION = date_format.format_now("yy.MM.dd.${env.BUILD_ID}")
+                    env.NEW_VERSION = (new Date()).format("yy.MM.dd.${env.BUILD_ID}")
                     currentBuild.description = env.NEW_VERSION
                 }
             }
